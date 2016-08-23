@@ -4,6 +4,7 @@ import json
 ##__________________________________________||
 class UserDetails(object):
     def __init__(self):
+        self.content = None
         pass
 
     @staticmethod
@@ -21,3 +22,11 @@ class UserDetails(object):
                 return content
         else:
             return None
+
+    @staticmethod
+    def detailsFound(details):
+        if details is None:
+            return False
+        else:
+            return True
+            
