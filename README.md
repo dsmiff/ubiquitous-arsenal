@@ -6,9 +6,9 @@ Grab Twitter data related to all things Arsenal
 Twython is required.
 It can be installed via pip.
 
-For Tywthon:
+For Twython:
 ```shell
-pip install tywthon
+pip install twython
 ```
 
 Following which you can make a clone of this repository
