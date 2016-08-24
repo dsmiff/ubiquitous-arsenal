@@ -1,3 +1,8 @@
+# Dominic Smith <dosmith@cern.ch>
+'''
+Class to alter Twitter feed i.e. convert unicode to string
+'''
+
 import os
 import unicodedata
 

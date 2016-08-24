@@ -1,3 +1,8 @@
+# Dominic Smith <dosmith@cern.ch>
+'''
+Class to access user credentials
+'''
+
 import os
 import json
 

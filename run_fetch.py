@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Dominic Smith <dosmith@cern.ch>
 '''
 Fetch information off Twitter following a specific hashtag
@@ -5,15 +6,10 @@ Fetch information off Twitter following a specific hashtag
 
 import os
 import sys
-import logging
+from core.LoggingUtils import *
 from usr.UserClass import UserDetails
 from core.TweetUtils import TweetTools
 from twython import Twython
-
-##_______________________________________________________||
-log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
-logging.basicConfig(filename='twitter_out.log',level=logging.INFO)
 
 ##_______________________________________________________||
 def main():
