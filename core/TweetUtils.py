@@ -18,3 +18,13 @@ class TweetTools(object):
     def convertToText(self,tweets):
         all_text = [self.convertText(tweet['text']) for tweet in tweets]
         return all_text
+
+##_______________________________________________________||
+class TweetFilter(object):
+    def __init__(self):
+        self.cache = {}
+
+    def __call__(self, textList):
+        if not textList:
+            print("Received Twitter feed empty")
+            
