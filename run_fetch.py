@@ -8,7 +8,7 @@ import os
 import sys
 from core.LoggingUtils import *
 from usr.UserClass import UserDetails
-from core.TweetUtils import TweetTools
+from core.TweetUtils import *
 from twython import Twython
 
 ##_______________________________________________________||
@@ -16,6 +16,8 @@ def main():
     
     my_details = UserDetails()
     twitter_obj = TweetTools()
+    nCounts = args.counts
+    hashtag = args.hashtag
     
     details = my_details.readDetails('my_details.json')
     if not my_details.detailsFound(details):
@@ -32,13 +34,15 @@ def main():
                 oauth_token=TWITTER_ACCESS_TOKEN,
                 oauth_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
     
-    search = t.search(q='#arsenal',   
-                      count=100)
+    search = t.search(q=hashtag,   
+                      count=nCounts)
 
     tweets = search['statuses']
     text = twitter_obj.convertToText(tweets)
-    print text
 
+    filter_text = TweetFilter()
+    filter_dict = filter_text(hashtag,text)
+    
     for tweet in tweets:
         print tweet['id_str'], '\n', tweet['text'], '\n\n\n'
 

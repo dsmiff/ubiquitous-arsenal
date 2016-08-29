@@ -4,7 +4,14 @@ Class to alter Twitter feed i.e. convert unicode to string
 '''
 
 import os
+import argparse
 import unicodedata
+
+##_______________________________________________________||
+parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--counts", default=100, help="Total number of counts to fetch")
+parser.add_argument("-H", "--hashtag", default='#arsenal', help="Input hashtag")
+args = parser.parse_args()
 
 ##_______________________________________________________||
 class TweetTools(object):
@@ -21,10 +28,37 @@ class TweetTools(object):
 
 ##_______________________________________________________||
 class TweetFilter(object):
-    def __init__(self):
-        self.cache = {}
-
-    def __call__(self, textList):
+    
+    cache =  {}
+    
+    def __call__(self, hashtag, textList):
         if not textList:
             print("Received Twitter feed empty")
+        else:
+            if hashtag in self.__class__.cache:
+                return self.__class__.cache
+            branch = self.assign(hashtag, textList)
+            if branch is not None:
+                self.__class__.cache = branch
+                return self.__class__.cache
+                
+            return None
             
+    def assign(self, hashtag, textList):
+        if self.textListEmpty(textList): return None
+        if self.hashtagEmpty(hashtag): return None
+
+        branch = {hashtag: textList}
+        return branch
+        
+    def textListEmpty(self, textList):
+        if not textList:
+            return True
+        else:
+            return False
+
+    def hashtagEmpty(self, hashtag):
+        if not type(hashtag) is str: return True
+        else: return False
+        
+        
