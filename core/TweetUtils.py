@@ -6,6 +6,8 @@ Class to alter Twitter feed i.e. convert unicode to string
 import os
 import argparse
 import unicodedata
+from collections import Counter
+from itertools import izip_longest
 
 ##_______________________________________________________||
 parser = argparse.ArgumentParser()
@@ -60,5 +62,20 @@ class TweetFilter(object):
     def hashtagEmpty(self, hashtag):
         if not type(hashtag) is str: return True
         else: return False
+
+    def hashtaginString(self,string,hashtag):
+        if hashtag or hashtag.capital() in string: return True
+        else: return False
         
+    def contains_commonTitles(self, titles):
+        commonTitles = ['RT', 'Arsene', 'Arsenal']
+        return bool(set(commonTitles) & set(titles))
         
+    def returnTopHits(self, filter_dict,hashtag):
+        strings = filter_dict[hashtag]
+        matches = [ ]
+        for string in strings:
+            if not self.hashtaginString(string, hashtag): continue
+            titles = [l for l in string.split() if l[0].isupper()]
+            if self.contains_commonTitles(titles): continue
+            return titles
