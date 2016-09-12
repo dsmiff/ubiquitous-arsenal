@@ -43,9 +43,10 @@ def main():
     filter_text = TweetFilter()
     filter_dict = filter_text(hashtag,text)
 
-    print filter_text.returnTopHits(filter_dict,hashtag)
-#    for tweet in tweets:
-#        print tweet['id_str'], '\n', tweet['text'], '\n\n\n'
+    results = filter_text.returnResults(filter_dict,hashtag)
+    #    for tweet in tweets:
+#        print tweet
+        #        print tweet['id_str'], '\n', tweet['text'], '\n\n\n'
 
 ##_______________________________________________________||
 if __name__=='__main__':

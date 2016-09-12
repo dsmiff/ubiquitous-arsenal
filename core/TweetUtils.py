@@ -79,3 +79,15 @@ class TweetFilter(object):
             titles = [l for l in string.split() if l[0].isupper()]
             if self.contains_commonTitles(titles): continue
             return titles
+
+    def returnResults(self, filter_dict, hashtag):
+        strings = filter_dict[hashtag]
+        results = [ ]
+        for string in strings:
+            stringList = string.split()
+            scores = [item for item in stringList if item.split('-')[0].isdigit()]
+            if (scores and '-' in scores[0]):
+                results.append(scores[0])
+            else: continue
+
+        return results
