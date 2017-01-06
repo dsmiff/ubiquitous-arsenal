@@ -87,6 +87,8 @@ class TweetFilter(object):
             stringList = string.split()
             scores = [item for item in stringList if item.split('-')[0].isdigit()]
             if (scores and '-' in scores[0]):
+                # Remove formations
+                if scores[0].count('-') > 1: continue
                 results.append(scores[0])
             else: continue
 

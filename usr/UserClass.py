@@ -12,6 +12,9 @@ class UserDetails(object):
         self.content = None
         pass
 
+    def __call__(self):
+        print "Extracting detail information"
+    
     @staticmethod
     def readDetails(fname):
         try:
@@ -22,7 +25,7 @@ class UserDetails(object):
         file_dir = os.path.join(detail_dir, fname)
 
         if os.path.isfile(file_dir):
-            with open(file_dir) as jfile:
+            with open(file_dir,'r') as jfile:
                 content = json.load(jfile)
                 return content
         else:

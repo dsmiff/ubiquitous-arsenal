@@ -9,8 +9,22 @@ import sys
 from core.LoggingUtils import *
 from usr.UserClass import UserDetails
 from core.TweetUtils import *
+from core.DataUtils import *
 from twython import Twython
 
+##_______________________________________________________||
+def returnScore(filter_dict, hashtag):
+
+    filter_object = TweetFilter()
+    scores = filter_object.returnResults(filter_dict, hashtag)
+    return scores
+
+##_______________________________________________________||
+def returnGossip(text, hashtag):
+
+    data_object = DataTools(text)
+    data_object.removeTeamPlayers()
+    
 ##_______________________________________________________||
 def main():
     
@@ -23,7 +37,7 @@ def main():
     if not my_details.detailsFound(details):
         log.error("Cannot find any user details")
         sys.exit(1)
-    
+
     TWITTER_APP_KEY = details['TWITTER_APP_KEY']
     TWITTER_APP_KEY_SECRET = details['TWITTER_APP_KEY_SECRET']
     TWITTER_ACCESS_TOKEN = details['TWITTER_ACCESS_TOKEN']
@@ -38,16 +52,19 @@ def main():
                       count=nCounts)
 
     tweets = search['statuses']
-    text = twitter_obj.convertToText(tweets)
+    text   = twitter_obj.convertToText(tweets)
 
-    filter_text = TweetFilter()
-    filter_dict = filter_text(hashtag,text)
+    # Define user objects
+    filter_object = TweetFilter()
+    filter_dict = filter_object(hashtag, text)
 
-    results = filter_text.returnResults(filter_dict,hashtag)
-    #    for tweet in tweets:
-#        print tweet
-        #        print tweet['id_str'], '\n', tweet['text'], '\n\n\n'
-
+    # Return data
+    results = returnScore(filter_dict, hashtag)
+    gossip  = returnGossip(text, hashtag)
+    
+#    for tweet in tweets:
+#        print tweet['id_str'], '\n', tweet['text'], '\n\n\n'
+#
 ##_______________________________________________________||
 if __name__=='__main__':
     main()
