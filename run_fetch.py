@@ -14,16 +14,24 @@ from twython import Twython
 
 ##_______________________________________________________||
 def returnScore(filter_dict, hashtag):
-
+    '''Return a collection of results 
+    from a recent match
+    '''
+    
     filter_object = TweetFilter()
     scores = filter_object.returnResults(filter_dict, hashtag)
     return scores
 
 ##_______________________________________________________||
 def returnGossip(text, hashtag):
-
-    data_object = DataTools(text)
-    data_object.removeTeamPlayers()
+    '''Return gossip and useful information
+    from the collection of tweets obtained with
+    the hashtag
+    '''
+    
+    data_object  = DataTools(text)
+    team         = hashtag.split('#')[1]
+    refined_text = data_object.removeTeamPlayers(team)
     
 ##_______________________________________________________||
 def main():

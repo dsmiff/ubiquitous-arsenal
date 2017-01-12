@@ -29,6 +29,7 @@ class UserDetails(object):
                 content = json.load(jfile)
                 return content
         else:
+            print("File directory not found")
             return None
 
     @staticmethod
