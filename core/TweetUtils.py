@@ -20,13 +20,20 @@ class TweetTools(object):
     def __init__(self):
         pass
 
+    def __call__(self):
+        print "Begin fetching Twitter info"
+    
     def convertText(self,text):
         text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
         return text
 
     def convertToText(self,tweets):
         all_text = [self.convertText(tweet['text']) for tweet in tweets]
-        return all_text
+        if not all_text:
+            print "Unable to convert text"
+            sys.exit(1)
+        else:
+            return all_text
 
 ##_______________________________________________________||
 class TweetFilter(object):
