@@ -10,12 +10,6 @@ from collections import Counter
 from itertools import izip_longest
 
 ##_______________________________________________________||
-parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--counts", default=100, help="Total number of counts to fetch")
-parser.add_argument("-H", "--hashtag", default='#arsenal', help="Input hashtag")
-args = parser.parse_args()
-
-##_______________________________________________________||
 class TweetTools(object):
     def __init__(self):
         pass

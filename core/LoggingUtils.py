@@ -7,15 +7,21 @@ import os
 import logging
 
 ##_______________________________________________________||
-filename = 'feed_out.log'
-log_dir = os.path.join(os.environ['UBIQHOME'],'logs')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("tweets_output.log", 'w')
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
-else: pass
+##_______________________________________________________||
+class LogMessage(object):
+    def __init__(self, fmt, *args, **kwargs):
+        self.fmt = fmt
+        self.args = args
+        self.kwargs = kwargs
 
-file_dir = os.path.join(log_dir, filename)
-log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
-logging.basicConfig(filename=file_dir,level=logging.INFO)
-
+    def __str__(self):
+        return self.fmt.format(*self.args, **self.kwargs)
+    

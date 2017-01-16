@@ -21,6 +21,8 @@ class DataTools(object):
         '''Filters the tweets by removing players of team provided
         by the hashtag
         '''
+        print "Removing team players from squad: ", team
+        
         squad = self.loadSquad(team)
         numbers = squad.keys()
         players = squad.values()
