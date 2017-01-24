@@ -61,7 +61,7 @@ class TweetFilter(object):
             return False
 
     def hashtagEmpty(self, hashtag):
-        if not type(hashtag) is str: return True
+        if not isinstance(hashtag,basestring): return True
         else: return False
 
     def hashtaginString(self,string,hashtag):
