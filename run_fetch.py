@@ -38,10 +38,15 @@ def returnGossip(text, hashtag):
     '''
     
     print "Fetching latest gossip from collection of tweets"
+    keywords = ['bid','reports','according','sign']
     data_object  = DataTools(text)
     team         = hashtag.split('#')[1]
     refined_text = data_object.removeTeamPlayers(team)
-    
+    for tweet in refined_text:
+        for keyword in keywords:
+            if keyword in tweet:
+                print 'tweet : ', tweet
+        
 ##_______________________________________________________||
 def main():
 
@@ -49,7 +54,7 @@ def main():
     
     my_details = UserDetails()
     twitter_obj = TweetTools()
-    nCounts = args.counts
+    nCounts = int(args.counts)
     hashtag = args.hashtag
     scores  = args.score
     gossip  = args.gossip
@@ -72,7 +77,7 @@ def main():
                 oauth_token=TWITTER_ACCESS_TOKEN,
                 oauth_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
     
-    search = t.search(q=hashtag,   
+    search = t.search(q=hashtag,
                       count=nCounts)
 
     tweets = search['statuses']
