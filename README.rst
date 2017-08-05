@@ -18,6 +18,7 @@ Following which you can make a clone of this repository: ::
   git clone git@github.com:dsmiff/ubiquitous-arsenal.git
   source setup.sh
 
+  
 Running ubiquitous-arsenal: ::
   source setup.sh
   python run_fetch.py -n <nTweets> -H <hashtag>
