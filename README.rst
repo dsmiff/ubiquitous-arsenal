@@ -5,7 +5,7 @@ Grab Twitter data related to all things Arsenal
 Installation requirements
 -----------
 
-Twython is required.
+NLTK, nameparser and Twython is required.
 It can be installed via pip.
 
 For Twython: ::
@@ -25,4 +25,6 @@ Running ubiquitous-arsenal: ::
 
 Twython returns a maximum of 100 tweets from the search function. Therefore, nTweets is split into intervals of 100 tweets,
 each interval waiting 5 seconds before moving to the next.
+Logic is to filter squad players from each tweet, then search for human names using the nltk package.
+Immediate weakness is the difficulty in searching only for last names.
 

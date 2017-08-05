@@ -7,7 +7,9 @@ import os
 import argparse
 import unicodedata
 import json
+import nltk
 from collections import Counter
+from nameparser.parser import HumanName
 
 ##_______________________________________________________||
 class DataTools(object):
@@ -54,3 +56,24 @@ class DataTools(object):
         '''
         return list(set(text))
         
+    def findTargets(self, text):
+        '''Find human names in text
+        Taken from: https://stackoverflow.com/questions/20290870/improving-the-extraction-of-human-names-with-nltk
+        '''
+        tokens = nltk.tokenize.word_tokenize(text)
+        pos = nltk.pos_tag(tokens)
+        sentt = nltk.ne_chunk(pos, binary = False)
+        player_list = []
+        person = []
+        name = ""
+        for subtree in sentt.subtrees(filter=lambda t: t.label() == 'PERSON'):
+            for leaf in subtree.leaves():
+                person.append(leaf[0])
+            if len(person) > 1: #avoid grabbing lone surnames
+                for part in person:
+                    name += part + ' '
+                if name[:-1] not in player_list:
+                    player_list.append(name[:-1])
+                name = ''
+            person = []
+        return player_list

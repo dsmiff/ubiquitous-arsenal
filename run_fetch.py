@@ -45,9 +45,15 @@ def returnGossip(text, hashtag):
     refined_text = data_object.removeTeamPlayers(team)
     keyword_tweets = [tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
     matches      = data_object.removeDuplicates(keyword_tweets)
+    players = []
     for match in matches:
-        print 'Gossip : ', match    
-    
+        hits = data_object.findTargets(match)
+        for name in hits:
+            last_first = HumanName(name).last + ', ' + HumanName(name).first
+            players.append(last_first)
+        
+    print 'Players gossiped about : ', players
+
 ##_______________________________________________________||
 def main():
 
@@ -86,7 +92,7 @@ def main():
                       count=nCounts)
 
         tweet_list = search['statuses']
-        time.sleep(5)
+        time.sleep(2)
         tweets.extend(tweet_list)
         
     text = twitter_obj.convertToText(tweets)
