@@ -6,6 +6,7 @@ Fetch information off Twitter following a specific hashtag
 
 import os
 import sys
+import time
 from core.LoggingUtils import *
 from usr.UserClass import UserDetails
 from core.TweetUtils import *
@@ -14,7 +15,7 @@ from twython import Twython
 
 ##_______________________________________________________||
 parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--counts", default=100, help="Total number of counts to fetch")
+parser.add_argument("-n", "--counts", type=int, default=100, help="Total number of counts to fetch: max is 100")
 parser.add_argument("-H", "--hashtag", default='#arsenal', help="Input hashtag")
 parser.add_argument("-s", "--score",default=False, action='store_true', help="Return collection of scores")
 parser.add_argument("-g", "--gossip",default=True, action='store_true', help="Return gossip from tweets")
@@ -42,11 +43,11 @@ def returnGossip(text, hashtag):
     data_object  = DataTools(text)
     team         = hashtag.split('#')[1]
     refined_text = data_object.removeTeamPlayers(team)
-    for tweet in refined_text:
-        for keyword in keywords:
-            if keyword in tweet:
-                print 'tweet : ', tweet
-        
+    keyword_tweets = [tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
+    matches      = data_object.removeDuplicates(keyword_tweets)
+    for match in matches:
+        print 'Gossip : ', match    
+    
 ##_______________________________________________________||
 def main():
 
@@ -72,16 +73,23 @@ def main():
     TWITTER_ACCESS_TOKEN = details['TWITTER_ACCESS_TOKEN']
     TWITTER_ACCESS_TOKEN_SECRET = details['TWITTER_ACCESS_TOKEN_SECRET']
 
-    t = Twython(app_key=TWITTER_APP_KEY, 
+    twitter = Twython(app_key=TWITTER_APP_KEY, 
                 app_secret=TWITTER_APP_KEY_SECRET,
                 oauth_token=TWITTER_ACCESS_TOKEN,
                 oauth_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+
+    tweets = []
+    iterations = int(round(nCounts/100.0))
     
-    search = t.search(q=hashtag,
+    for i in range(0,iterations):
+        search = twitter.search(q=hashtag,
                       count=nCounts)
 
-    tweets = search['statuses']
-    text   = twitter_obj.convertToText(tweets)
+        tweet_list = search['statuses']
+        time.sleep(5)
+        tweets.extend(tweet_list)
+        
+    text = twitter_obj.convertToText(tweets)
 
     # Define user objects
     filter_object = TweetFilter()

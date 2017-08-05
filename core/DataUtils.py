@@ -48,3 +48,9 @@ class DataTools(object):
         else:
             print "Unable to load team squad"
             return None
+        
+    def removeDuplicates(self, text):
+        '''Remove duplicate tweets
+        '''
+        return list(set(text))
+        
