@@ -86,17 +86,15 @@ def main():
 
     tweets = []
     iterations = int(round(nCounts/100.0))
-    
-    for i in range(0,iterations):
-        search = twitter.search(q=hashtag,
-                      count=nCounts)
+    params = {'q': hashtag, 'count':nCounts}
 
+    for i in range(0,iterations):
+        search = twitter.search(**params)
         tweet_list = search['statuses']
         time.sleep(2)
         tweets.extend(tweet_list)
         
     text = twitter_obj.convertToText(tweets)
-
     # Define user objects
     filter_object = TweetFilter()
     filter_dict = filter_object(hashtag, text)
