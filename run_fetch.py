@@ -7,10 +7,11 @@ Fetch information off Twitter following a specific hashtag
 import os
 import sys
 import time
+import ConfigParser
 from core.LoggingUtils import *
 from usr.UserClass import UserDetails
 from core.TweetUtils import *
-from core.DataUtils import *
+from core.DataUtils import DataTools
 from twython import Twython
 
 ##_______________________________________________________||
@@ -22,37 +23,13 @@ parser.add_argument("-g", "--gossip",default=True, action='store_true', help="Re
 args = parser.parse_args()
 
 ##_______________________________________________________||
-def returnScore(filter_dict, hashtag):
-    '''Return a collection of results 
-    from a recent match
-    '''
-    
-    filter_object = TweetFilter()
-    scores = filter_object.returnResults(filter_dict, hashtag)
-    return scores
+config = ConfigParser.ConfigParser()
+config.read('my_details.cfg')
 
-##_______________________________________________________||
-def returnGossip(text, hashtag):
-    '''Return gossip and useful information
-    from the collection of tweets obtained with
-    the hashtag
-    '''
-    
-    print "Fetching latest gossip from collection of tweets"
-    keywords = ['bid','reports','according','sign']
-    data_object  = DataTools(text)
-    team         = hashtag.split('#')[1]
-    refined_text = data_object.removeTeamPlayers(team)
-    keyword_tweets = [tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
-    matches      = data_object.removeDuplicates(keyword_tweets)
-    players = []
-    for match in matches:
-        hits = data_object.findTargets(match)
-        for name in hits:
-            last_first = HumanName(name).last + ', ' + HumanName(name).first
-            players.append(last_first)
-        
-    print 'Players gossiped about : ', players
+TWITTER_APP_KEY = config.get('credentials','app_key')
+TWITTER_APP_KEY_SECRET = config.get('credentials','app_secret')
+TWITTER_ACCESS_TOKEN = config.get('credentials','oath_token')
+TWITTER_ACCESS_TOKEN_SECRET = config.get('credentials','oath_token_secret')
 
 ##_______________________________________________________||
 def main():
@@ -74,36 +51,26 @@ def main():
         log.error("Cannot find any user details")
         sys.exit(1)
 
-    TWITTER_APP_KEY = details['TWITTER_APP_KEY']
-    TWITTER_APP_KEY_SECRET = details['TWITTER_APP_KEY_SECRET']
-    TWITTER_ACCESS_TOKEN = details['TWITTER_ACCESS_TOKEN']
-    TWITTER_ACCESS_TOKEN_SECRET = details['TWITTER_ACCESS_TOKEN_SECRET']
-
     twitter = Twython(app_key=TWITTER_APP_KEY, 
                 app_secret=TWITTER_APP_KEY_SECRET,
                 oauth_token=TWITTER_ACCESS_TOKEN,
                 oauth_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
-
+    twitter.verify_credentials()
+    
     tweets = []
     iterations = int(round(nCounts/100.0))
     params = {'q': hashtag, 'count':nCounts}
 
-    for i in range(0,iterations):
-        search = twitter.search(**params)
-        tweet_list = search['statuses']
-        time.sleep(2)
-        tweets.extend(tweet_list)
-        
+    tweets = twitter_obj.fetchTweets(iterations, twitter, params)    
     text = twitter_obj.convertToText(tweets)
     # Define user objects
     filter_object = TweetFilter()
     filter_dict = filter_object(hashtag, text)
 
     # Return data
-    if scores:
-        results = returnScore(filter_dict, hashtag)
     if gossip:
-        gossip  = returnGossip(text, hashtag)
+        keywords = ['bid','reports','according','sign']
+        gossip  = DataTools(text).findGossip(text, keywords, hashtag)
 
 ##_______________________________________________________||
 if __name__=='__main__':

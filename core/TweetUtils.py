@@ -5,6 +5,7 @@ Class to alter Twitter feed i.e. convert unicode to string
 
 import os
 import argparse
+import time
 import unicodedata
 from collections import Counter
 from itertools import izip_longest
@@ -12,11 +13,22 @@ from itertools import izip_longest
 ##_______________________________________________________||
 class TweetTools(object):
     def __init__(self):
+        self.tweets = []
         pass
 
     def __call__(self):
         print "Begin fetching Twitter info"
-    
+
+    def fetchTweets(self, iterations, twitter_handle, params):
+        
+        for i in range(0,iterations):
+            search = twitter_handle.search(**params)
+            tweet_list = search['statuses']
+            time.sleep(2)
+            self.tweets.extend(tweet_list)
+            
+        return self.tweets
+            
     def convertText(self,text):
         text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
         return text
