@@ -77,3 +77,19 @@ class DataTools(object):
                 name = ''
             person = []
         return player_list
+
+    def findGossip(self, filter_dict, keywords, hashtag):
+        print "Fetching latest gossip from collection of tweets"
+        keywords = ['bid','reports','according','sign']
+        team         = hashtag.split('#')[1]
+        refined_text = self.removeTeamPlayers(team)
+        keyword_tweets = [tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
+        matches      = self.removeDuplicates(keyword_tweets)
+        players = []
+        for match in matches:
+            hits = self.findTargets(match)
+            for name in hits:
+                last_first = HumanName(name).last + ', ' + HumanName(name).first
+                players.append(last_first)
+                
+        print 'Players gossiped about : ', players

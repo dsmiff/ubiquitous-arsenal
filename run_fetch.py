@@ -11,7 +11,7 @@ import ConfigParser
 from core.LoggingUtils import *
 from usr.UserClass import UserDetails
 from core.TweetUtils import *
-from core.DataUtils import *
+from core.DataUtils import DataTools
 from twython import Twython
 
 ##_______________________________________________________||
@@ -30,39 +30,6 @@ TWITTER_APP_KEY = config.get('credentials','app_key')
 TWITTER_APP_KEY_SECRET = config.get('credentials','app_secret')
 TWITTER_ACCESS_TOKEN = config.get('credentials','oath_token')
 TWITTER_ACCESS_TOKEN_SECRET = config.get('credentials','oath_token_secret')
-
-##_______________________________________________________||
-def returnScore(filter_dict, hashtag):
-    '''Return a collection of results 
-    from a recent match
-    '''
-    
-    filter_object = TweetFilter()
-    scores = filter_object.returnResults(filter_dict, hashtag)
-    return scores
-
-##_______________________________________________________||
-def returnGossip(text, hashtag):
-    '''Return gossip and useful information
-    from the collection of tweets obtained with
-    the hashtag
-    '''
-    
-    print "Fetching latest gossip from collection of tweets"
-    keywords = ['bid','reports','according','sign']
-    data_object  = DataTools(text)
-    team         = hashtag.split('#')[1]
-    refined_text = data_object.removeTeamPlayers(team)
-    keyword_tweets = [tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
-    matches      = data_object.removeDuplicates(keyword_tweets)
-    players = []
-    for match in matches:
-        hits = data_object.findTargets(match)
-        for name in hits:
-            last_first = HumanName(name).last + ', ' + HumanName(name).first
-            players.append(last_first)
-        
-    print 'Players gossiped about : ', players
 
 ##_______________________________________________________||
 def main():
@@ -94,19 +61,16 @@ def main():
     iterations = int(round(nCounts/100.0))
     params = {'q': hashtag, 'count':nCounts}
 
-    tweets = twitter_obj.fetchTweets(iterations, twitter, params)
-    
-    print tweets
+    tweets = twitter_obj.fetchTweets(iterations, twitter, params)    
     text = twitter_obj.convertToText(tweets)
     # Define user objects
     filter_object = TweetFilter()
     filter_dict = filter_object(hashtag, text)
 
     # Return data
-    if scores:
-        results = returnScore(filter_dict, hashtag)
     if gossip:
-        gossip  = returnGossip(text, hashtag)
+        keywords = ['bid','reports','according','sign']
+        gossip  = DataTools(text).findGossip(text, keywords, hashtag)
 
 ##_______________________________________________________||
 if __name__=='__main__':
