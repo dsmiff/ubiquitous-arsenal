@@ -20,6 +20,7 @@ Following which you can make a clone of this repository: ::
 
   
 Running ubiquitous-arsenal: ::
+  
   source setup.sh
   python run_fetch.py -n <nTweets> -H <hashtag>
 
