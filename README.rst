@@ -34,3 +34,8 @@ From which, to analyse the tweets: ::
 
   python analyse_tweets.py --in-tweets <tweet_file>
   
+To fetch the current list of players of a given team: ::
+
+  python fetch_players.py --hashtag <team>
+
+This will store the players and their shirt number in the teams directory.
