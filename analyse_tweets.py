@@ -20,7 +20,7 @@ def main():
 
     keywords = ['bid','reports','according','sign']
     gossip  = DataTools().findGossip(filter_object.tweets, keywords, filter_object.hashtag)
-
+    
 ##_______________________________________________________||
 if __name__=='__main__':
     main()

@@ -34,7 +34,7 @@ def main():
 
     tweets = twitter_obj.fetchTweets(twitter)
     text   = twitter_obj.convertToText(tweets)
-    print text, len(text)
+
 ##_______________________________________________________||
 if __name__=='__main__':
     main()

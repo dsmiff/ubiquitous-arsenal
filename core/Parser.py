@@ -11,5 +11,5 @@ parser.add_argument("-g", "--gossip",default=True, action='store_true', help="Re
 parser.add_argument('--out-dir', default='./', help="Location of output")
 parser.add_argument('--in-tweets', help="Location of tweets file")
 parser.add_argument('--dry_run', action = "store_true", default = False, help = "Dry run")
-parser.add_argument('--logging-level', default = 'WARN', choices = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL'], help = 'level for logging')
+parser.add_argument('--logging-level', default = 'INFO', choices = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL'], help = 'level for logging')
 args = parser.parse_args()

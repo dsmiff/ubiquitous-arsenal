@@ -8,14 +8,17 @@ import argparse
 import unicodedata
 import json
 import nltk
-from collections import Counter
+import time
+import logging
+from collections import Counter, defaultdict
 from nameparser.parser import HumanName
 
 ##_______________________________________________________||
 class DataTools(object):
-    def __init__(self, tweets):
-        self.tweets = tweets
-
+    def __init__(self):
+        self.outputDir = os.path.dirname(os.path.realpath(__file__))
+        self.logger = logging.getLogger('Data tools')
+        
     def __call__(self):
         print "Performing data analysis on tweets"
 
@@ -78,18 +81,62 @@ class DataTools(object):
             person = []
         return player_list
 
-    def findGossip(self, filter_dict, keywords, hashtag):
-        print "Fetching latest gossip from collection of tweets"
-        keywords = ['bid','reports','according','sign']
+    def findDuplicates(self, players):
+        tally = defaultdict(list)
+        for i, player in enumerate(players):
+            tally[player].append(i)
+        return tally
+    
+    def findGossip(self, tweets, keywords, hashtag):
+        self.tweets = tweets
+        self.hits = {}
+        self.logger.info("Fetching latest gossip from collection of tweets")
+        keywords =[ ] # ['bid','reports','according','sign']
         team         = hashtag.split('#')[1]
-        refined_text = self.removeTeamPlayers(team)
-        keyword_tweets = [tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
-        matches      = self.removeDuplicates(keyword_tweets)
+        refined_text = self.tweets #self.removeTeamPlayers(team)
+        keyword_tweets = refined_text #[tweet for tweet in refined_text for keyword in keywords if keyword in tweet]
+        tweets      = self.removeDuplicates(keyword_tweets)
         players = []
-        for match in matches:
+        for match in tweets:
             hits = self.findTargets(match)
             for name in hits:
                 last_first = HumanName(name).last + ', ' + HumanName(name).first
                 players.append(last_first)
-                
-        print 'Players gossiped about : ', players
+
+        players = self.findDuplicates(players)
+        self.hits = {player: len(hit) for player, hit in players.iteritems()}
+        self.logger.info('Things gossiped about {}'.format(self.hits))
+
+    def writeToFile(self, text_list, out_dir):
+        '''
+        Write the text conversion to a file for later use. Will assume output directory
+        is current directory.
+        '''
+        time_str = time.strftime("%Y%m%d-%H%M%S")
+        with open(os.path.join(out_dir, 'tweets_{}.txt'.format(time_str)),"a") as f:            
+            for item in text_list:
+                if not self.filterText(item): continue
+                f.write("%s\n" % item)
+            f.close()
+
+    def filterText(self, text):
+        '''
+        Need to remove new lines otherwise they are treated as another tweet.
+        '''
+        if '\n' in text: return False
+        return True
+            
+    @staticmethod
+    def readFromFile(input_dir):
+        '''
+        Read in tweets from input file. At this point, there should be no new lines '\n' in each tweet.
+        '''
+        print "Reading tweets from input file: {}".format(input_dir)
+        if os.path.isfile(input_dir):
+            with open(input_dir, "r") as f:
+                content = f.readlines()
+            content = [x.strip() for x in content]
+
+        else:
+            self.logger.error("Unable to find input text file")
+        return content        
