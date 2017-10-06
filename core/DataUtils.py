@@ -10,6 +10,7 @@ import json
 import nltk
 import time
 import logging
+import urllib2
 from collections import Counter, defaultdict
 from nameparser.parser import HumanName
 
@@ -140,3 +141,40 @@ class DataTools(object):
         else:
             self.logger.error("Unable to find input text file")
         return content        
+
+    @staticmethod
+    def dumpToFile(dictionary, team=None):
+        '''
+        Dump a dictionary to a JSON with team name.
+        If team is given, the JSON will be stored in a subdirectory labelled teams.
+        '''        
+        import json
+        if team:
+            if not os.path.isdir("teams"): os.makedirs("teams")
+        with open(os.path.join("teams",'{}.json'.format(team)), 'w') as fp:
+            json.dump(dictionary,fp)
+    
+##_______________________________________________________||
+class UrlTools(object):
+    def __init__(self, hashtag):
+        try:
+            self.team = hashtag.split('#')[1]
+        except ValueError:
+            self.team = hashtag.lower()
+        self.players = { } 
+        self.players[self.team] = { }
+        self.logger = logging.getLogger('Url tools')
+        
+    def getPlayersFromUrl(self, url):
+        self.logger.info("Will begin scraping info from url: {}".format(url.format(self.team)))
+        page = urllib2.urlopen(url.format(self.team))
+        try:
+            from bs4 import BeautifulSoup
+        except ImportError:
+            print "Unable to import bs4"
+
+        soup = BeautifulSoup(page, "html.parser")
+        # This page structure is specific to the url
+        data = soup.find_all('td',attrs={'width':180})
+        self.players[self.team] = {number: player.text for number, player in enumerate(data)}
+        return self.players
