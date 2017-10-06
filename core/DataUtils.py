@@ -1,6 +1,7 @@
 # Dominic Smith <dosmith@cern.ch>
 '''
-Class to perform analysis on data of tweets
+DataTools class to perform analysis on data of tweets.
+UrlTools class to scrape player information off the web, from a given hashtag.
 '''
 
 import os
@@ -38,7 +39,9 @@ class DataTools(object):
         return self.tweets
     
     def findNames(self):
-
+        '''
+        To be implemented later. Unsure of it's purpose so far
+        '''
         pass
 
     def loadSquad(self, team):
@@ -56,12 +59,11 @@ class DataTools(object):
             return None
         
     def removeDuplicates(self, text):
-        '''Remove duplicate tweets
-        '''
         return list(set(text))
         
     def findTargets(self, text):
-        '''Find human names in text
+        '''
+        Find human names in text
         Taken from: https://stackoverflow.com/questions/20290870/improving-the-extraction-of-human-names-with-nltk
         '''
         tokens = nltk.tokenize.word_tokenize(text)
@@ -82,13 +84,20 @@ class DataTools(object):
             person = []
         return player_list
 
-    def findDuplicates(self, players):
+    def findDuplicates(self, list_info):
+        '''
+        Find duplicates in a list.
+        '''
         tally = defaultdict(list)
-        for i, player in enumerate(players):
-            tally[player].append(i)
+        for i, info in enumerate(list_info):
+            tally[info].append(i)
         return tally
     
     def findGossip(self, tweets, keywords, hashtag):
+        '''
+        From a collection of tweets, apply the logic to find duplicates and refine text 
+        (commented out for now)
+        '''
         self.tweets = tweets
         self.hits = {}
         self.logger.info("Fetching latest gossip from collection of tweets")
@@ -156,6 +165,10 @@ class DataTools(object):
     
 ##_______________________________________________________||
 class UrlTools(object):
+    '''
+    Args:
+        hashtag: Input argument which should be a hashtag.
+    '''
     def __init__(self, hashtag):
         try:
             self.team = hashtag.split('#')[1]
@@ -166,6 +179,10 @@ class UrlTools(object):
         self.logger = logging.getLogger('Url tools')
         
     def getPlayersFromUrl(self, url):
+        '''
+        From a given url, scrape the player information i.e. name and squad number
+        and return a dictionary with such info.
+        '''
         self.logger.info("Will begin scraping info from url: {}".format(url.format(self.team)))
         page = urllib2.urlopen(url.format(self.team))
         try:
