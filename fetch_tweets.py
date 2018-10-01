@@ -19,6 +19,7 @@ TWITTER_ACCESS_TOKEN = config.get('credentials','oath_token')
 TWITTER_ACCESS_TOKEN_SECRET = config.get('credentials','oath_token_secret')
 
 logging.basicConfig(level = logging.getLevelName(args.logging_level))
+
 ##_______________________________________________________||
 def main():
     
